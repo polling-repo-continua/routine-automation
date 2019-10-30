@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Before using this script, make sure you have your ssh-keys created with ssh-keygen command
+# And copy your .ssh/id_rsa.pub to vps authorized keys with ssh-copy-id -i ~/.ssh/id_rsa.pub user@vps
+# or you can do it manually
+
+display_usage() { 
+	echo -e "\nUsage:\e[36m $0 local /root/file.txt\e[39m\nWill copy file.txt to vps" 
+	echo -e "\nUsage:\e[36m $0 remote /root/vps/file.txt\e[39m\nWill copy file.txt from vps"
+	}
+
+if [  $# -le 1 ]; then 
+	display_usage
+	exit 1
+fi
+
+vpsip="IP"
+
+if [ $1 == "local" ]
+then
+	scp $2 root@$vpsip
+else
+	scp root@$vpsip:$2 .
+fi
