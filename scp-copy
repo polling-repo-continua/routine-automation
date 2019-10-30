@@ -18,7 +18,7 @@ vpsip="IP"
 
 if [ $1 == "local" ]
 then
-	scp $2 root@$vpsip
+	scp $2 root@$vpsip:$2
 else
 	scp root@$vpsip:$2 .
 fi
