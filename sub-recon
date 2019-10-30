@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+# Enum subdomains
+amass enum -d $1 -o amass.txt
+sublist3r -d $1 -o $PWD/sublister.txt
+findomain -t $1 -o
+
+mv $1.txt findomain.txt
+cat amass.txt sublister.txt findomain.txt | sort -u >> all.txt
+
+
+# Screenshot subdomains
+mkdir aquatone-output
+cat all.txt | filter-resolved | aquatone -out aquatone-output/ -ports medium
+
+
+#otx and wayback urls
+otxurls $1 >> otx.urls
+waybackurls $1 >> wayback.urls
+
+mkdir js_files
+cat otx.urls wayback.urls | grep -w '\.js' | sort -u >> js_files/jsurls.txt
+cat js_files/jsurls.txt | parallel -j50 -q curl -w 'Status:%{http_code}\t Size:%{size_download}\t %{url_effective}\n' -o /dev/null -sk | grep -v 'Status:404' >> js_files/working-js.txt
+
+
+# Directory enum
+mkdir dirsearch-output
+for i in $(cat all.txt);do dirsearch -u $i -w /home/arbenn/tools/SecLists/Discovery/Web-Content/common.txt -e php,html,js,json --plain-text-report=dirsearch-output/$i;done
+
+
+echo -e "\e[5m[*] Done \e[25m \e[31m`date`"
