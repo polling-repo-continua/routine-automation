@@ -1,0 +1,39 @@
+#!/bin/bash
+
+
+while true; do
+	echo ""
+	echo -e "\e[91m[1] List sessions\e[0m"
+	echo -e "\e[91m[2] New session\e[0m"
+	echo -e "\e[91m[3] Attach session\e[0m"
+	echo -e "\e[91m[4] Kill session\e[0m"
+	echo -e "\e[91m[5] Kill all sessions\e[0m"
+	echo -e -n "\e[95m>\e[0m "
+	read user_input
+
+
+	if [  $user_input == "1" ]; then
+		tmux ls
+
+	elif [ $user_input == "2" ]; then
+		echo -e "\e[91m[*] Session name\e[0m"
+		echo -e -n "\e[95m>\e[0m "
+		read name
+		tmux new -s $name
+
+	elif [ $user_input == "3" ]; then
+		echo -e "\e[91m[*] Session name\e[0m"
+		echo -e -n "\e[95m>\e[0m "
+		read name
+		tmux attach-session -t $name
+
+	elif [ $user_input == "4" ]; then
+		echo -e "\e[91m[*] Session name\e[0m"
+		echo -e -n "\e[95m>\e[0m "
+		read name
+		tmux kill-session -t $name
+
+	elif [ $user_input == "5" ]; then
+		tmux kill-server
+	fi
+done
