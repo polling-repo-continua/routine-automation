@@ -1,0 +1,44 @@
+#!/bin/bash
+
+
+while true; do
+	echo ""
+	echo -e "\e[91m[1] List monitors\e[0m"
+	echo -e "\e[92m[2] Enable only 2nd monitor\e[0m"
+	echo -e "\e[93m[3] Enable only 1st monitor\e[0m"
+	echo -e "\e[94m[4] Choose 2nd monitor position\e[0m"
+	echo -e -n "\e[95m>\e[0m "
+	read user_input
+
+
+	if [  $user_input == "1" ]; then
+		xrandr
+
+	elif [ $user_input == "2" ]; then
+		xrandr --output eDP1 --off
+
+	elif [ $user_input == "3" ]; then
+		xrandr --output HDMI1 --off
+
+	elif [ $user_input == "4" ]; then
+		echo -e "\e[91m[1]\e[0m 2nd monitor above"
+		echo -e "\e[92m[2]\e[0m 2nd monitor below"
+		echo -e "\e[93m[3]\e[0m 2nd monitor right of"
+		echo -e "\e[94m[4]\e[0m 2nd monitor left of"
+		echo -e "\e[95m>\e[0m "
+		read position
+
+		if [ $position == "1" ]; then
+			xrandr --output HDMI1 --auto --above eDP1
+
+		elif [ $position == "2" ]; then
+			xrandr --output HDMI1 --auto --below eDP1
+
+		elif [ $position == "3" ]; then
+			xrandr --output HDMI1 --auto --right-of eDP1
+
+		elif [ $position == "4" ]; then
+			xrandr --output HDMI1 --auto --left-of eDP1
+		fi
+	fi
+doneS
