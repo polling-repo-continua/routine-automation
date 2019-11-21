@@ -1,0 +1,11 @@
+#!/bin/bash
+
+vps_ip="127.x.x.1"
+
+if [ "$1" == "rdp" ]; then
+  rdesktop -u root -p 'PASSWORD' $ip -g 80%
+
+else
+  ssh root@$ip
+
+fi
