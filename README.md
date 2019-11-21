@@ -7,4 +7,4 @@
 - **tmx** - quickly create, attach or kill tmux sessions
 - **convps** - connect to your vps using ssh or rdp client
 
-You can put these scripts on your $PATH, /usr/bin or symlink __ln -s routine-automation/* /usr/local/bin/*__
+You can put these scripts on your $PATH, /usr/bin or symlink __ln -s routine-automation/* /usr/local/bin/__
