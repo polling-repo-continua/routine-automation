@@ -5,7 +5,7 @@ mkdir $1
 # Enum subdomains
 amass enum -d $1 -o $1/amass.txt
 sublist3r -d $1 -o $PWD/$1/sublister.txt
-fdomain $1
+findomain -t $1 -o
 
 mv $1.txt $1/findomain.txt
 cat $1/amass.txt $1/sublister.txt $1/findomain.txt | sort -u >> $1/all.txt
