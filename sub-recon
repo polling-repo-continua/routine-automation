@@ -1,37 +1,33 @@
 #!/bin/bash
 
+mkdir $1
+
 # Enum subdomains
+amass enum -d $1 -o $1/amass.txt
+sublist3r -d $1 -o $PWD/$1/sublister.txt
+fdomain $1
 
-amass enum -d $1 -o amass.txt
-sublist3r -d $1 -o $PWD/sublister.txt
-findomain -t $1 -o
-
-mv $1.txt findomain.txt
-cat amass.txt sublister.txt findomain.txt | sort -u >> all.txt
-
+mv $1.txt $1/findomain.txt
+cat $1/amass.txt $1/sublister.txt $1/findomain.txt | sort -u >> $1/all.txt
 
 # Screenshot subdomains
-echo -e "\e[92m[*] Screenshot with aquatone"
-mkdir aquatone-output
-cat all.txt | filter-resolved >> resolved.txt
-cat resolved.txt | httprobe >> httprobe.txt
-cat httprobe.txt | aquatone -out aquatone-output/ -ports medium
+mkdir $1/aquatone-output
+cat $1/all.txt | filter-resolved >> $1/resolved.txt
+cat $1/resolved.txt | httprobe >> $1/httprobe.txt
+cat $1/httprobe.txt | aquatone -out $1/aquatone-output/ -ports medium
 
 #otx and wayback urls
-echo -e "\e[92m[*] wayback urls"
-otxurls $1 >> otx.urls
-waybackurls $1 >> wayback.urls
+otxurls $1 >> $1/otx.urls
+waybackurls $1 >> $1/wayback.urls
 
-echo -e "\e[92m[*] Downloading javascript files"
-mkdir js_files
-cat otx.urls wayback.urls | grep -w '\.js' | sort -u >> js_files/jsurls.txt
-cat js_files/jsurls.txt | parallel -j50 -q curl -w 'Status:%{http_code}\t Size:%{size_download}\t %{url_effective}\n' -o /dev/null -sk | grep -v 'Status:404' >> js_files/working-js.txt
+mkdir $1/js_files
+cat $1/otx.urls wayback.urls | grep -w '\.js' | sort -u >> $1/js_files/jsurls.txt
+cat $1/js_files/jsurls.txt | parallel -j50 -q curl -w 'Status:%{http_code}\t Size:%{size_download}\t %{url_effective}\n' -o /dev/null -sk | grep -v 'Status:404' >> $1/js_files/working-js.txt
 
 
 # Directory enum
-echo -e "\e[92m[*] Starting dirsearch"
-mkdir dirsearch-output
-for i in $(cat all.txt);do dirsearch -u $i -w /home/arbenn/tools/SecLists/Discovery/Web-Content/common.txt -e php,html,js,json --plain-text-report=dirsearch-output/$i;done
+mkdir $1/dirsearch-output
+for i in $(cat $1/all.txt);do dirsearch -u $i -w /home/arbenn/tools/SecLists/Discovery/Web-Content/common.txt -e php,html,js,json,asp,aspx,jsp --plain-text-report=$1/dirsearch-output/$i;done
 
 
 echo -e "\e[5m[*] Done \e[25m \e[31m`date`"
